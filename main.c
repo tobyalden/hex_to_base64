@@ -20,18 +20,20 @@ int main(int argc, char *argv[])
   mpz_init_set_ui(base, 64);
   mpz_t place_value;
   mpz_init(place_value);
-  // unsigned long power = 0;
   long power = 0;
   mpz_pow_ui(place_value, base, power);
   while(mpz_cmp(decimal, place_value) > 0) {
     power++;
     mpz_pow_ui(place_value, base, power);
   }
+
+  long length = power;
+  char base64[length];
+
   if(power > 0) {
     power--;
   }
 
-  char *base64 = "";
   while(power >= 0) {
     mpz_pow_ui(place_value, base, power);
     mpz_t quotient;
@@ -39,8 +41,8 @@ int main(int argc, char *argv[])
     mpz_fdiv_q(quotient, decimal, place_value);
     unsigned long quotient_ui = mpz_get_ui(quotient);
     char place_char = base64_table[quotient_ui];
-    printf("%c", place_char);
-    // base64String = base64String.concat(getBase64Character(integerQuotient.toNumber()));
+    base64[(length - 1) - power] = place_char;
+    printf("Fill in cell #%ld with %c\n", power, place_char);
     mpz_t decrement;
     mpz_init(decrement);
     mpz_mul_ui(decrement, place_value, quotient_ui);
@@ -48,6 +50,10 @@ int main(int argc, char *argv[])
     power--;
   }
 
-  // return base64String;
+  printf("BASE64 VALUE: ");
+  for (int i = 0; i < length; i++) {
+    printf("%c", base64[i]);
+  }
+  printf("\n");
 
 }
